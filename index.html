@@ -2,7 +2,10 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="83돼지 아재">
 <title>83돼지 아재 블로그 작성기</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
@@ -10,7 +13,6 @@
   :root {
     --bg: #F5F0E8;
     --paper: #FDFAF4;
-    --card: #FFFFFF;
     --ink: #1C1C1C;
     --ink-muted: #6B6860;
     --accent: #C84B2F;
@@ -22,107 +24,232 @@
     --shadow: 0 6px 28px rgba(0,0,0,0.10);
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
   body {
     font-family: 'Noto Sans KR', sans-serif;
     background: var(--bg);
-    background-image:
-      radial-gradient(circle at 20% 50%, rgba(200,75,47,0.04) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(43,107,63,0.04) 0%, transparent 50%);
     color: var(--ink);
     min-height: 100vh;
+    min-height: -webkit-fill-available;
   }
 
   /* ── Header ── */
   .header {
     background: var(--ink);
     color: white;
-    padding: 0 36px;
-    height: 64px;
+    padding: 0 20px;
+    height: 56px;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 10px;
     position: sticky;
     top: 0;
     z-index: 100;
   }
   .header-logo {
     font-family: 'Noto Serif KR', serif;
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: -0.5px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
-  .header-logo span { font-size: 26px; }
-  .header-sub {
-    font-size: 12px;
-    color: #999;
-    font-weight: 300;
-    margin-left: 4px;
-  }
+  .header-sub { font-size: 11px; color: #999; font-weight: 300; }
   .header-tag {
     margin-left: auto;
     background: var(--accent);
     color: white;
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 4px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.5px;
-    text-transform: uppercase;
   }
 
-  /* ── Layout ── */
-  .wrap {
-    max-width: 820px;
+  /* ── Screens ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── API Key Screen ── */
+  .api-screen {
+    max-width: 480px;
     margin: 0 auto;
-    padding: 40px 20px 60px;
+    padding: 40px 20px;
+  }
+  .api-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+  }
+  .api-card h2 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .api-card p {
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+  .api-card p strong { color: var(--ink); }
+
+  .api-steps {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .api-steps p {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-bottom: 0;
+    line-height: 2;
+  }
+  .api-steps a {
+    color: var(--accent3);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .api-steps .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  .api-steps .step:last-child { margin-bottom: 0; }
+  .step-num {
+    background: var(--ink);
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
   }
 
-  /* ── Category ── */
+  .key-input-wrap { position: relative; margin-bottom: 12px; }
+  .key-input-wrap input {
+    width: 100%;
+    padding: 14px 48px 14px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .key-input-wrap input:focus { border-color: var(--accent); }
+  .toggle-eye {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--ink-muted);
+    padding: 4px;
+  }
+
+  .save-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .save-btn:hover { background: var(--accent); }
+
+  .api-notice {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: #FFF8EE;
+    border: 1px solid #FFE0B0;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #996600;
+    line-height: 1.7;
+  }
+  .api-err {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--accent);
+    display: none;
+    text-align: center;
+  }
+  .api-err.on { display: block; }
+
+  /* ── Main App Screen ── */
+  .wrap { max-width: 820px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  .style-info {
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--ink-muted);
+  }
+  .style-info strong { color: var(--ink); }
+
   .label {
     font-size: 11px;
     font-weight: 700;
     color: var(--ink-muted);
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+  .label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
   .cat-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
-
   .cat-btn {
     background: var(--paper);
     border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 12px;
+    border-radius: 12px;
+    padding: 14px 12px;
     cursor: pointer;
     transition: all 0.18s;
     text-align: center;
     font-family: 'Noto Sans KR', sans-serif;
   }
-  .cat-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-  .cat-btn .icon { font-size: 26px; display: block; margin-bottom: 6px; }
+  .cat-btn:active { transform: scale(0.97); }
+  .cat-btn .icon { font-size: 24px; display: block; margin-bottom: 5px; }
   .cat-btn .name { font-size: 12px; font-weight: 700; color: var(--ink); display: block; margin-bottom: 2px; }
   .cat-btn .desc { font-size: 10px; color: var(--ink-muted); display: block; }
-
   .cat-btn.c1.on { background: #FFF3EF; border-color: var(--accent); }
   .cat-btn.c2.on { background: #EFF7F2; border-color: var(--accent2); }
   .cat-btn.c3.on { background: #EEF3FF; border-color: var(--accent3); }
@@ -132,19 +259,16 @@
   .cat-btn.c3.on .name { color: var(--accent3); }
   .cat-btn.c4.on .name { color: var(--accent4); }
 
-  /* ── Form Card ── */
   .form-card {
     background: var(--paper);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 32px;
-    margin-bottom: 20px;
+    padding: 24px;
+    margin-bottom: 16px;
     box-shadow: var(--shadow-sm);
   }
-
-  .field { margin-bottom: 24px; }
+  .field { margin-bottom: 20px; }
   .field:last-child { margin-bottom: 0; }
-
   .field-label {
     font-size: 13px;
     font-weight: 700;
@@ -154,15 +278,11 @@
     align-items: center;
     gap: 6px;
   }
-  .field-label .hint {
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--ink-muted);
-  }
+  .field-label .hint { font-size: 11px; font-weight: 400; color: var(--ink-muted); }
 
   input[type=text], textarea {
     width: 100%;
-    padding: 12px 16px;
+    padding: 12px 14px;
     border: 1.5px solid var(--border);
     border-radius: 8px;
     font-family: 'Noto Sans KR', sans-serif;
@@ -171,14 +291,14 @@
     background: white;
     outline: none;
     transition: border-color 0.2s;
+    -webkit-appearance: none;
   }
   input[type=text]:focus, textarea:focus { border-color: var(--accent); }
-  textarea { min-height: 88px; resize: vertical; line-height: 1.7; }
+  textarea { min-height: 80px; resize: vertical; line-height: 1.7; }
 
-  /* ── Tone Pills ── */
-  .tone-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tone-row { display: flex; gap: 7px; flex-wrap: wrap; }
   .tone-pill {
-    padding: 7px 15px;
+    padding: 7px 13px;
     border: 1.5px solid var(--border);
     border-radius: 30px;
     background: white;
@@ -189,13 +309,11 @@
     color: var(--ink);
     transition: all 0.15s;
   }
-  .tone-pill:hover { border-color: var(--ink); }
   .tone-pill.on { background: var(--ink); color: white; border-color: var(--ink); }
 
-  /* ── Generate Button ── */
   .gen-btn {
     width: 100%;
-    padding: 18px;
+    padding: 17px;
     background: var(--ink);
     color: white;
     border: none;
@@ -205,53 +323,25 @@
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
-    letter-spacing: -0.3px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
+    -webkit-appearance: none;
   }
-  .gen-btn:hover:not(:disabled) {
-    background: var(--accent);
-    box-shadow: 0 8px 24px rgba(200,75,47,0.25);
-    transform: translateY(-1px);
-  }
-  .gen-btn:disabled { background: #bbb; cursor: not-allowed; transform: none; box-shadow: none; }
+  .gen-btn:active { background: var(--accent); transform: scale(0.99); }
+  .gen-btn:disabled { background: #bbb; }
 
-  /* ── Error ── */
-  .err {
-    margin-top: 14px;
-    padding: 12px 16px;
-    background: #FFF0EE;
-    border: 1px solid #F5C4BA;
-    border-radius: 8px;
-    color: #B03020;
-    font-size: 13px;
-    display: none;
-  }
+  .err { margin-top: 12px; padding: 12px 14px; background: #FFF0EE; border: 1px solid #F5C4BA; border-radius: 8px; color: #B03020; font-size: 13px; display: none; }
   .err.on { display: block; }
 
-  /* ── Loading ── */
-  .loading {
-    display: none;
-    text-align: center;
-    padding: 48px 20px;
-  }
+  .loading { display: none; text-align: center; padding: 40px 20px; }
   .loading.on { display: block; }
-  .pig-bounce {
-    font-size: 52px;
-    display: block;
-    animation: pigbounce 0.55s ease-in-out infinite alternate;
-    margin-bottom: 16px;
-  }
-  @keyframes pigbounce {
-    from { transform: translateY(0) rotate(-3deg); }
-    to   { transform: translateY(-14px) rotate(3deg); }
-  }
-  .loading-text { color: var(--ink-muted); font-size: 14px; line-height: 1.8; }
-  .loading-text strong { color: var(--ink); font-weight: 700; }
+  .pig-bounce { font-size: 48px; display: block; animation: pigbounce 0.55s ease-in-out infinite alternate; margin-bottom: 14px; }
+  @keyframes pigbounce { from { transform: translateY(0) rotate(-3deg); } to { transform: translateY(-14px) rotate(3deg); } }
+  .loading-text { color: var(--ink-muted); font-size: 13px; line-height: 1.9; }
+  .loading-text strong { color: var(--ink); }
 
-  /* ── Output ── */
   .output-card {
     background: var(--paper);
     border: 1px solid var(--border);
@@ -262,39 +352,36 @@
     animation: fadeUp 0.35s ease;
   }
   .output-card.on { display: block; }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
   .output-topbar {
     background: white;
     border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
+    padding: 14px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
   .output-topbar-left {
     font-family: 'Noto Serif KR', serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .output-topbar-left .cat-tag {
+  .cat-tag {
     font-family: 'Noto Sans KR', sans-serif;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
-    padding: 3px 9px;
+    padding: 2px 8px;
     border-radius: 4px;
     background: var(--bg);
     color: var(--ink-muted);
   }
-  .action-row { display: flex; gap: 8px; }
+  .action-row { display: flex; gap: 7px; }
   .action-btn {
-    padding: 8px 15px;
+    padding: 7px 13px;
     border: 1.5px solid var(--border);
     border-radius: 7px;
     background: white;
@@ -304,186 +391,216 @@
     cursor: pointer;
     transition: all 0.15s;
     color: var(--ink);
-    display: flex;
-    align-items: center;
-    gap: 5px;
   }
-  .action-btn:hover { background: var(--ink); color: white; border-color: var(--ink); }
-  .action-btn.accent:hover { background: var(--accent); border-color: var(--accent); color: white; }
+  .action-btn:active { background: var(--ink); color: white; border-color: var(--ink); }
 
-  .output-body {
-    padding: 32px;
-  }
+  .output-body { padding: 24px 20px; }
   .output-text {
     font-family: 'Noto Serif KR', serif;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 2.1;
     color: var(--ink);
     white-space: pre-wrap;
     word-break: keep-all;
   }
+  .char-count { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 12px; color: var(--ink-muted); text-align: right; }
 
-  /* ── Character count ── */
-  .char-count {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
+  /* 하단 키 변경 버튼 */
+  .change-key-btn {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
     font-size: 12px;
     color: var(--ink-muted);
-    text-align: right;
-  }
-
-  /* 스타일 안내 */
-  .style-info {
-    background: white;
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--accent);
-    border-radius: 0 10px 10px 0;
-    padding: 14px 18px;
-    margin-bottom: 28px;
-    font-size: 13px;
-    line-height: 1.8;
-    color: var(--ink-muted);
-  }
-  .style-info strong { color: var(--ink); }
-
-  @media (max-width: 600px) {
-    .cat-row { grid-template-columns: repeat(2, 1fr); }
-    .header-logo { font-size: 17px; }
-    .form-card { padding: 22px; }
-    .output-body { padding: 22px; }
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    font-family: 'Noto Sans KR', sans-serif;
   }
 </style>
 </head>
 <body>
 
 <header class="header">
-  <div class="header-logo">
-    <span>🐷</span> 83돼지 아재
-  </div>
+  <div class="header-logo">🐷 83돼지 아재</div>
   <div class="header-sub">블로그 초안 작성기</div>
   <div class="header-tag">AI Writer</div>
 </header>
 
-<div class="wrap">
+<!-- ── API 키 입력 화면 ── -->
+<div class="screen active" id="apiScreen">
+  <div class="api-screen">
+    <div class="api-card">
+      <h2>🔑 API 키 입력</h2>
+      <p>AI 글쓰기 기능을 사용하려면<br><strong>Anthropic API 키</strong>가 필요해요.<br>키는 이 기기에만 저장되고 외부로 전송되지 않아요.</p>
 
-  <div class="style-info">
-    <strong>글쓰기 원칙</strong> — 43살 직장인 가장이 기록하듯 솔직하게. AI처럼 보이지 않게, 전문가처럼 설명하지 않게. 평범한 사람 냄새 나는 글.
+      <div class="api-steps">
+        <div class="step"><span class="step-num">1</span><span><a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> 접속 후 로그인</span></div>
+        <div class="step"><span class="step-num">2</span><span>왼쪽 메뉴 <strong>API Keys</strong> 클릭</span></div>
+        <div class="step"><span class="step-num">3</span><span><strong>Create Key</strong> → 이름 입력 → 생성</span></div>
+        <div class="step"><span class="step-num">4</span><span><strong>sk-ant-</strong> 로 시작하는 키 복사</span></div>
+        <div class="step"><span class="step-num">5</span><span>아래에 붙여넣기 후 시작!</span></div>
+      </div>
+
+      <div class="key-input-wrap">
+        <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        <button class="toggle-eye" onclick="toggleEye()">👁</button>
+      </div>
+      <button class="save-btn" onclick="saveKey()">🐷 시작하기</button>
+      <div class="api-err" id="apiErr">API 키를 입력해주세요</div>
+
+      <div class="api-notice">
+        💰 <strong>요금 안내:</strong> 초안 1개 생성 = 약 $0.003 (약 4원)<br>
+        console.anthropic.com → Billing → Usage limits 에서 월 한도 설정 가능해요.
+      </div>
+    </div>
   </div>
+</div>
 
-  <!-- 카테고리 -->
-  <div class="label">카테고리</div>
-  <div class="cat-row">
-    <button class="cat-btn c1" onclick="pickCat(this,'재테크')">
-      <span class="icon">🐷</span>
-      <span class="name">재테크 일지</span>
-      <span class="desc">주식·절약·투자</span>
-    </button>
-    <button class="cat-btn c2" onclick="pickCat(this,'골프')">
-      <span class="icon">⛳</span>
-      <span class="name">골프 일기</span>
-      <span class="desc">라운딩·연습·장비</span>
-    </button>
-    <button class="cat-btn c3" onclick="pickCat(this,'헬스')">
-      <span class="icon">💪</span>
-      <span class="name">헬스 도전기</span>
-      <span class="desc">운동·다이어트·건강</span>
-    </button>
-    <button class="cat-btn c4" onclick="pickCat(this,'일기')">
-      <span class="icon">📔</span>
-      <span class="name">일기장</span>
-      <span class="desc">일상·생각·감성</span>
-    </button>
-  </div>
+<!-- ── 메인 앱 화면 ── -->
+<div class="screen" id="mainScreen">
+  <div class="wrap">
 
-  <!-- 입력 폼 -->
-  <div class="form-card">
-    <div class="field">
-      <div class="field-label">오늘의 주제 <span class="hint">어떤 내용을 쓰고 싶으세요?</span></div>
-      <input type="text" id="topic" placeholder="예: 이번 달 주식 결산 / 오늘 라운딩 후기 / 헬스장 3개월째 / 그냥 오늘 하루..." />
+    <div class="style-info">
+      ✍️ <strong>글쓰기 원칙</strong> — 43살 직장인 가장이 기록하듯 솔직하게. AI처럼 보이지 않게, 전문가처럼 설명하지 않게.
     </div>
 
-    <div class="field">
-      <div class="field-label">키워드 &amp; 메모 <span class="hint">기억나는 것, 넣고 싶은 내용 (선택)</span></div>
-      <textarea id="keywords" placeholder="예: 코스피 2500 / 손실 -5% 근데 버텼음 / 오늘 파3 버디 / 헬스장 30분만 하고 도망옴 / 그냥 생각난 것들..."></textarea>
+    <div class="label">카테고리</div>
+    <div class="cat-row">
+      <button class="cat-btn c1" onclick="pickCat(this,'재테크')">
+        <span class="icon">🐷</span>
+        <span class="name">재테크 일지</span>
+        <span class="desc">주식·절약·투자</span>
+      </button>
+      <button class="cat-btn c2" onclick="pickCat(this,'골프')">
+        <span class="icon">⛳</span>
+        <span class="name">골프 일기</span>
+        <span class="desc">라운딩·연습·장비</span>
+      </button>
+      <button class="cat-btn c3" onclick="pickCat(this,'헬스')">
+        <span class="icon">💪</span>
+        <span class="name">헬스 도전기</span>
+        <span class="desc">운동·다이어트·건강</span>
+      </button>
+      <button class="cat-btn c4" onclick="pickCat(this,'일기')">
+        <span class="icon">📔</span>
+        <span class="name">일기장</span>
+        <span class="desc">일상·생각·감성</span>
+      </button>
     </div>
 
-    <div class="field">
-      <div class="field-label">분위기 <span class="hint">어떤 느낌으로?</span></div>
-      <div class="tone-row">
-        <button class="tone-pill on" onclick="pickTone(this,'담백하고 솔직하게')">담백하게</button>
-        <button class="tone-pill" onclick="pickTone(this,'자조적인 유머 섞어서')">자조적으로</button>
-        <button class="tone-pill" onclick="pickTone(this,'약간 감성적이고 회고하듯')">감성적으로</button>
-        <button class="tone-pill" onclick="pickTone(this,'툴툴대고 푸념하듯')">푸념하듯</button>
-        <button class="tone-pill" onclick="pickTone(this,'차분하고 현실적으로')">현실적으로</button>
+    <div class="form-card">
+      <div class="field">
+        <div class="field-label">오늘의 주제 <span class="hint">어떤 내용을 쓰고 싶으세요?</span></div>
+        <input type="text" id="topic" placeholder="예: 이번 달 주식 결산 / 오늘 라운딩 후기..." />
+      </div>
+      <div class="field">
+        <div class="field-label">키워드 &amp; 메모 <span class="hint">넣고 싶은 내용 (선택)</span></div>
+        <textarea id="keywords" placeholder="예: 코스피 2500 / 손실 -5% 근데 버텼음 / 오늘 파3 버디..."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label">분위기</div>
+        <div class="tone-row">
+          <button class="tone-pill on" onclick="pickTone(this,'담백하고 솔직하게')">담백하게</button>
+          <button class="tone-pill" onclick="pickTone(this,'자조적인 유머 섞어서')">자조적으로</button>
+          <button class="tone-pill" onclick="pickTone(this,'약간 감성적이고 회고하듯')">감성적으로</button>
+          <button class="tone-pill" onclick="pickTone(this,'툴툴대고 푸념하듯')">푸념하듯</button>
+          <button class="tone-pill" onclick="pickTone(this,'차분하고 현실적으로')">현실적으로</button>
+        </div>
+      </div>
+      <button class="gen-btn" id="genBtn" onclick="generate()">✍️ 초안 생성하기</button>
+      <div class="err" id="errBox"></div>
+    </div>
+
+    <div class="loading" id="loadingBox">
+      <span class="pig-bounce">🐷</span>
+      <div class="loading-text"><strong>아재 감성</strong>으로 글 쓰는 중...<br>AI티 안 나게 열심히 생각 중이에요</div>
+    </div>
+
+    <div class="output-card" id="outputCard">
+      <div class="output-topbar">
+        <div class="output-topbar-left">📝 생성된 초안 <span class="cat-tag" id="outputCatTag"></span></div>
+        <div class="action-row">
+          <button class="action-btn" onclick="generate()">🔄 다시</button>
+          <button class="action-btn" onclick="doCopy()">📋 복사</button>
+        </div>
+      </div>
+      <div class="output-body">
+        <div class="output-text" id="outputText"></div>
+        <div class="char-count" id="charCount"></div>
       </div>
     </div>
 
-    <button class="gen-btn" id="genBtn" onclick="generate()">✍️ 초안 생성하기</button>
-    <div class="err" id="errBox"></div>
+    <button class="change-key-btn" onclick="changeKey()">🔑 API 키 변경하기</button>
   </div>
-
-  <!-- 로딩 -->
-  <div class="loading" id="loadingBox">
-    <span class="pig-bounce">🐷</span>
-    <div class="loading-text">
-      <strong>아재 감성</strong>으로 글 쓰는 중...<br>
-      AI티 안 나게 열심히 생각하고 있어요
-    </div>
-  </div>
-
-  <!-- 결과 -->
-  <div class="output-card" id="outputCard">
-    <div class="output-topbar">
-      <div class="output-topbar-left">
-        📝 생성된 초안
-        <span class="cat-tag" id="outputCatTag"></span>
-      </div>
-      <div class="action-row">
-        <button class="action-btn accent" onclick="generate()">🔄 다시 쓰기</button>
-        <button class="action-btn" onclick="doCopy()">📋 복사</button>
-      </div>
-    </div>
-    <div class="output-body">
-      <div class="output-text" id="outputText"></div>
-      <div class="char-count" id="charCount"></div>
-    </div>
-  </div>
-
 </div>
 
 <script>
-let cat = '';
-let tone = '담백하고 솔직하게';
+  let cat = '';
+  let tone = '담백하고 솔직하게';
+  let apiKey = '';
 
-const catLabel = {
-  '재테크': '🐷 재테크 일지',
-  '골프':   '⛳ 골프 일기',
-  '헬스':   '💪 헬스 도전기',
-  '일기':   '📔 일기장'
-};
+  const catLabel = { '재테크':'🐷 재테크 일지', '골프':'⛳ 골프 일기', '헬스':'💪 헬스 도전기', '일기':'📔 일기장' };
+  const catContext = {
+    '재테크': '재테크, 주식, 절약, 투자 (돼지의 재테크 일지)',
+    '골프':   '골프, 라운딩, 연습, 장비 (아재의 골프 일기)',
+    '헬스':   '40대 헬스, 운동, 다이어트 (40대 헬스 도전기)',
+    '일기':   '일상, 감성, 생각 (83돼지 일기장)'
+  };
 
-const catContext = {
-  '재테크': '재테크, 주식, 절약, 투자 이야기 (카테고리명: 돼지의 재테크 일지)',
-  '골프':   '골프, 라운딩, 연습, 장비, 필드 후기 (카테고리명: 아재의 골프 일기)',
-  '헬스':   '40대 헬스, 운동, 다이어트, 건강 관리 (카테고리명: 40대 헬스 도전기)',
-  '일기':   '일상, 감성, 생각, 에세이 (카테고리명: 83돼지 일기장)'
-};
+  // 저장된 키 확인
+  window.onload = function() {
+    const saved = localStorage.getItem('pig_api_key');
+    if (saved) {
+      apiKey = saved;
+      showMain();
+    }
+  };
 
-function pickCat(el, c) {
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('on'));
-  el.classList.add('on');
-  cat = c;
-}
+  function toggleEye() {
+    const inp = document.getElementById('apiKeyInput');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
 
-function pickTone(el, t) {
-  document.querySelectorAll('.tone-pill').forEach(b => b.classList.remove('on'));
-  el.classList.add('on');
-  tone = t;
-}
+  function saveKey() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    const err = document.getElementById('apiErr');
+    if (!key) { err.textContent = 'API 키를 입력해주세요'; err.classList.add('on'); return; }
+    if (!key.startsWith('sk-ant-')) { err.textContent = 'sk-ant- 로 시작하는 키를 입력해주세요'; err.classList.add('on'); return; }
+    apiKey = key;
+    localStorage.setItem('pig_api_key', key);
+    err.classList.remove('on');
+    showMain();
+  }
 
-function buildPrompt(c, topic, kw, t) {
-  return `너는 "83돼지 아재(83pig-diary)"라는 블로그를 운영하는 1983년생 평범한 한국 남성이다.
+  function showMain() {
+    document.getElementById('apiScreen').classList.remove('active');
+    document.getElementById('mainScreen').classList.add('active');
+  }
+
+  function changeKey() {
+    localStorage.removeItem('pig_api_key');
+    apiKey = '';
+    document.getElementById('apiKeyInput').value = '';
+    document.getElementById('mainScreen').classList.remove('active');
+    document.getElementById('apiScreen').classList.add('active');
+  }
+
+  function pickCat(el, c) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    cat = c;
+  }
+
+  function pickTone(el, t) {
+    document.querySelectorAll('.tone-pill').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    tone = t;
+  }
+
+  function buildPrompt(c, topic, kw, t) {
+    return `너는 "83돼지 아재(83pig-diary)"라는 블로그를 운영하는 1983년생 평범한 한국 남성이다.
 
 [페르소나]
 - 43살 직장인, 가족을 책임지는 가장
@@ -497,7 +614,7 @@ function buildPrompt(c, topic, kw, t) {
 - 문장은 읽기 편하게 적당히 끊되, 너무 짧게 토막내지 않음
 - 과하게 감성적이거나 논리적인 글은 피함
 - "~인 것 같다", "그냥 내 생각인데", "막상 해보니까", "뭐 그냥" 같은 자연스러운 표현 적절히 섞기
-- 너무 정리된 느낌(완벽한 구조) 피하고, 사람 냄새 나는 흐름으로 작성
+- 너무 정리된 느낌 피하고, 사람 냄새 나는 흐름으로 작성
 - 전문가처럼 설명하지 말 것 (일반인 관점 유지)
 - 광고글처럼 보이지 않게
 
@@ -520,69 +637,72 @@ ${kw ? `- 키워드/메모: ${kw}` : ''}
 - 분위기: ${t}
 
 제목 1개 쓰고 바로 본문 시작해줘. 800~1200자 내외. 순수 텍스트만.`;
-}
-
-async function generate() {
-  const topic = document.getElementById('topic').value.trim();
-  const kw    = document.getElementById('keywords').value.trim();
-  const errBox = document.getElementById('errBox');
-  errBox.classList.remove('on');
-
-  if (!cat)   { showErr('카테고리를 먼저 선택해주세요 🙏'); return; }
-  if (!topic) { showErr('주제를 입력해주세요 ✍️'); return; }
-
-  document.getElementById('genBtn').disabled = true;
-  document.getElementById('loadingBox').classList.add('on');
-  document.getElementById('outputCard').classList.remove('on');
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-     headers: {
-  'Content-Type': 'application/json',
-  'x-api-key': '여기에_본인_API키_붙여넣기',
-  'anthropic-version': '2023-06-01'
-},
-        body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1500,
-        messages: [{ role: 'user', content: buildPrompt(cat, topic, kw, tone) }]
-      })
-    });
-
-    const data = await res.json();
-    if (!res.ok || data.error) throw new Error(data.error?.message || '생성 실패');
-
-    const text = data.content?.[0]?.text || '';
-    document.getElementById('outputText').textContent = text;
-    document.getElementById('outputCatTag').textContent = catLabel[cat];
-    document.getElementById('charCount').textContent = `📝 ${text.replace(/\s/g,'').length}자`;
-    document.getElementById('outputCard').classList.add('on');
-    document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  } catch(e) {
-    showErr('오류 발생: ' + e.message);
-  } finally {
-    document.getElementById('loadingBox').classList.remove('on');
-    document.getElementById('genBtn').disabled = false;
   }
-}
 
-function showErr(msg) {
-  const el = document.getElementById('errBox');
-  el.textContent = msg;
-  el.classList.add('on');
-}
+  async function generate() {
+    const topic = document.getElementById('topic').value.trim();
+    const kw = document.getElementById('keywords').value.trim();
+    const errBox = document.getElementById('errBox');
+    errBox.classList.remove('on');
 
-function doCopy() {
-  const text = document.getElementById('outputText').textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.querySelector('.action-btn:not(.accent)');
-    const orig = btn.innerHTML;
-    btn.innerHTML = '✅ 복사됨';
-    setTimeout(() => btn.innerHTML = orig, 2000);
-  });
-}
+    if (!cat)   { showErr('카테고리를 먼저 선택해주세요 🙏'); return; }
+    if (!topic) { showErr('주제를 입력해주세요 ✍️'); return; }
+
+    document.getElementById('genBtn').disabled = true;
+    document.getElementById('loadingBox').classList.add('on');
+    document.getElementById('outputCard').classList.remove('on');
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1500,
+          messages: [{ role: 'user', content: buildPrompt(cat, topic, kw, tone) }]
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error?.message || '생성 실패');
+
+      const text = data.content?.[0]?.text || '';
+      document.getElementById('outputText').textContent = text;
+      document.getElementById('outputCatTag').textContent = catLabel[cat];
+      document.getElementById('charCount').textContent = `📝 ${text.replace(/\s/g,'').length}자`;
+      document.getElementById('outputCard').classList.add('on');
+      document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch(e) {
+      if (e.message.includes('401') || e.message.includes('auth')) {
+        showErr('API 키가 올바르지 않아요. 키를 다시 확인해주세요.');
+      } else {
+        showErr('오류 발생: ' + e.message);
+      }
+    } finally {
+      document.getElementById('loadingBox').classList.remove('on');
+      document.getElementById('genBtn').disabled = false;
+    }
+  }
+
+  function showErr(msg) {
+    const el = document.getElementById('errBox');
+    el.textContent = msg;
+    el.classList.add('on');
+  }
+
+  function doCopy() {
+    const text = document.getElementById('outputText').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelectorAll('.action-btn')[1];
+      btn.textContent = '✅ 복사됨';
+      setTimeout(() => btn.textContent = '📋 복사', 2000);
+    });
+  }
 </script>
 </body>
 </html>
