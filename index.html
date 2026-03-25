@@ -538,8 +538,12 @@ async function generate() {
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+     headers: {
+  'Content-Type': 'application/json',
+  'x-api-key': '여기에_본인_API키_붙여넣기',
+  'anthropic-version': '2023-06-01'
+},
+        body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1500,
         messages: [{ role: 'user', content: buildPrompt(cat, topic, kw, tone) }]
